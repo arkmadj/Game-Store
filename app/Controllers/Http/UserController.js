@@ -1,15 +1,26 @@
 'use strict'
 
 const User = use('App/Models/User')
-
-/** @typedef {import('@adonisjs/framework/src/Request')} Request */
-/** @typedef {import('@adonisjs/framework/src/Response')} Response */
-/** @typedef {import('@adonisjs/framework/src/View')} View */
-
-/**
- * Resourceful controller for interacting with customers
- */
 class UserController {
+
+  async index({response}){
+    try{
+      console.log('Here')
+      const admin = await User.all()
+      return response.json({
+        status: 'Success',
+        message: 'Showing all Admins.',
+        data: admin
+      })
+
+    }catch(error){
+      return response.json({
+        status: 'error',
+        message: 'An error occured.',
+        data: error
+      })      
+    }
+  }
 
   async login({
     request,

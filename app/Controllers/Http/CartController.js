@@ -1,6 +1,8 @@
 'use strict'
 
 const Cart = use('App/Models/Cart')
+// const axios = require('axios')
+const Mail = use('Mail')
 
 class CartController {
   async index({response, auth}){
@@ -23,6 +25,8 @@ class CartController {
   async addItem({response, auth, request}){
     const customer = auth.current.user    
     const {game} = request.only(['game'])
+
+    // console.log('Here jere')
     
     try{
       const cart = await Cart.create({
@@ -89,24 +93,31 @@ class CartController {
     }
   }
 
-  async checkout({auth, response}){
+  async checkout({auth, response, request}){
     const customer = auth.current.user
-    try{
+    const {message, email} = request.only(['message', 'email'])
+    if(await Mail.raw(message, (message) => {
+      message.to(email)
+      message.subject('Order Confirmation')
+    })){
+      try{
+        console.log("Trying to delete...")
         await Cart.query()
           .where('customer_id', customer.id)
           .delete()
 
-      return response.json({
-        status: 'Success',
-        message: 'Checkout successful.',
-        data: null
-      })
+        return response.json({
+          status: 'Success',
+          message: 'Checkout successful.',
+          data: null
+        })
 
-    }catch(error){
-      response.status(400).json({
-        status: 'Error',
-        message: 'An Error occured.'
-      })
+      }catch(error){
+        response.status(400).json({
+          status: 'Error',
+          message: 'An Error occured.'
+        })
+      }
     }
   }
 }

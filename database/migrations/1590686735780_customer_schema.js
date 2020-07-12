@@ -12,6 +12,7 @@ class CustomerSchema extends Schema {
       table.string('password')
       table.string('email')
       table.string('phone_no')
+      table.string('role')
     })
   }
 

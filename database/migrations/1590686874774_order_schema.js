@@ -18,9 +18,9 @@ class OrderSchema extends Schema {
       table.foreign('billing_id').references('addresses.id').onDelete('cascade')
       table.string('order_no')
       table.string('status')
-      table.integer('cost').unsigned()
-      table.integer('shipping_cost').unsigned()
-      table.integer('total_cost').unsigned()
+      table.float('cost').unsigned()
+      table.float('shipping_cost').unsigned()
+      table.float('total_cost').unsigned()
       table.boolean('voucher_used').defaultTo(false)
     })
   }

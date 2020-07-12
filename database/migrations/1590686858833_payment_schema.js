@@ -8,7 +8,7 @@ class PaymentSchema extends Schema {
     this.create('payments', (table) => {
       table.increments()
       table.timestamps()
-      table.string('name')
+      table.string('payment_name')
       table.string('type')
       table.text('description')
       table.string('img_src')

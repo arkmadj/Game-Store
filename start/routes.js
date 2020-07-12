@@ -1,5 +1,7 @@
 'use strict'
 
+const { RouteResource } = require('@adonisjs/framework/src/Route/Manager')
+
 /*
 |--------------------------------------------------------------------------
 | Routes
@@ -20,9 +22,16 @@ Route.group(() => {
   // Route.post('login', 'UserController.login')
   // Route.post('register', 'UserController.register')
   // Route.get('getuser/:id', 'UserController.show')
+
+  // Admin
+  Route.post('admin/login', 'CustomerController.adminLogin')
+  Route.post('admin/register', 'CustomerController.adminRegister')
+  Route.get('admin/admins', 'CustomerController.AdminIndex')
+
   // Customer
   Route.post('login', 'CustomerController.login')
-  Route.post('register', 'CustomerController.register')
+  Route.post('register', 'CustomerController.register')  
+  Route.get('getcustomers', 'CustomerController.index')
   Route.get('getuser/:id', 'CustomerController.show')  
   Route.get('userprofs', 'CustomerController.me').middleware('auth:jwt')
   
@@ -40,7 +49,8 @@ Route.group(() => {
   Route.post('checkout', 'CartController.checkout').middleware('auth:jwt')
   Route.delete('cart/delete/:id', 'CartController.removeItem').middleware(['auth:jwt'])
 
-  // Order
+  // Order  
+  Route.get('order/getalldata', 'OrderController.getAllData')
   Route.get('getallorders', 'OrderController.index')
   Route.get('getorders', 'OrderController.customerOrders').middleware('auth:jwt')
   Route.get('order/:id', 'OrderController.show').middleware('auth:jwt')

@@ -4,14 +4,85 @@ const Customer = use('App/Models/Customer')
 
 class CustomerController {
 
-  async login({
+  async index({response}){
+    try{
+      console.log('Here')
+      const customer = await Customer.query().where('role', null).fetch()
+      return response.json({
+        status: 'Success',
+        message: 'Showing all Customers.',
+        data: customer
+      })
+
+    }catch(error){
+      return response.json({
+        status: 'error',
+        message: 'An error occured.',
+        data: error
+      })      
+    }
+  }
+
+
+  // Admin
+  async adminLogin({
     request,
     auth,
     response
   }) {
     const {email, password} = request.only(['email', 'password'])
 
-    // console.log({ email, password})
+    try{
+        const token = await auth.attempt(
+          email,
+          password
+        )
+        return response.json({
+          status: 'Success',
+          data: token          
+        })
+        
+    }catch(error){
+        response.status(400).json({
+          status: 'Error',
+          message: 'Invalid email or password.',
+        })
+    }
+  }
+
+  async adminRegister({
+    request,
+    response,
+    auth
+  }) {
+    const customerData = request.only(['name', 'email', 'password', 'phone_no', 'role'])
+
+    try{
+        const customer = await Customer.create(customerData)
+        const token = await auth.generate(customer)
+
+        return response.json({
+          status: 'Success',
+          data: token
+        })
+    }catch(error){
+      return response.status(400).json({
+        status: 'error',
+        message: 'There was a problem creating user, please try again later.'
+      })
+      
+
+    }
+  }
+
+  // Customer
+
+  async login({
+    request,
+    auth,
+    response
+  }) {
+    const {email, password} = request.only(['email', 'password'])
 
     try{
         const token = await auth.attempt(
